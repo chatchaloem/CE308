@@ -92,7 +92,16 @@ const App = () => {
           data = {DATA}
           renderItem={renderItem}
           keyExtractor={item => item.id}
-          ListHeaderComponent={<Text style = {styles.headerFlatList}>หัวข้อที่น่าสนใจ</Text>}
+          ListHeaderComponent={<Text style = {styles.headerFlatList}>สิ่งที่ชอบ</Text>}
+          />
+      </View>
+
+      <View style = {styles.contentSection}>
+        <FlatList
+          data = {DATA}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          ListHeaderComponent={<Text style = {styles.headerFlatList}>สิ่งที่ไม่ชอบ</Text>}
           />
       </View>
 
