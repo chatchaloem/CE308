@@ -1,0 +1,1 @@
+NativeWind เพื่อจัดการสไตล์ด้วยแนวคิดแบบ Tailwind ผ่าน className โครงสร้างแอปถูกแบ่งเป็น Reusable Component เช่น CustomButton, CustomInput และ ItemCard เพื่อให้โค้ดอ่านง่ายและนำกลับมาใช้ซ้ำได้ มีการใช้ TypeScript เพื่อกำหนดชนิดข้อมูลของ props ลดข้อผิดพลาดในการพัฒนา
