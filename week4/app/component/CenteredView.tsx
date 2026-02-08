@@ -1,13 +1,18 @@
-import { Background } from "@react-navigation/elements";
-import {View} from "react-native";
+import { View } from "react-native";
+import { ReactNode } from "react";
 
 type CenteredViewProps = {
-  children: React.ReactNode;
-  BackgroundColor?: string;
+  children: ReactNode;
+  backgroundColor?: string;
 };
 
-export const CenteredView = ({ children, BackgroundColor = "bg-gray-100" }: CenteredViewProps) => {
+export const CenteredView = ({
+  children,
+  backgroundColor = "bg-gray-100",
+}: CenteredViewProps) => {
   return (
-    <View className={`flex-1 items-center justify-center ${BackgroundColor}`}>{children}</View>
+    <View className={`flex-1 justify-center items-center ${backgroundColor}`}>
+      {children}
+    </View>
   );
 };
