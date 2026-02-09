@@ -4,9 +4,9 @@ import { TouchableOpacity , Text, ActivityIndicator } from "react-native";
 interface CustomButtonProps {
   title: string;
   onPress: () => void;
-  size: "sm" | "md" | "lg";
-  color: "primary" | "secondary" | "danger";
-  isLoading?: boolean;
+  variant?: "Primary" | "Secondary" | "Danger";
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 export default function CustomButton({

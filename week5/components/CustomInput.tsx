@@ -3,8 +3,8 @@ import { TextInput, TextInputProps, View, Text } from "react-native";
 
 interface CustomInputProps extends TextInputProps {
   label: string;
-  console? : string;
-  touchable? : boolean;
+  error?: string;
+  touched?: boolean;
 }
 
 export default function CustomInput({
@@ -24,7 +24,7 @@ export default function CustomInput({
 
             {/* Input Field */}
             <TextInput
-                classname = {`
+                className = {`
                     w-full px-4 py-3 rounded-lg border-2
                     ${hasError ? 'border-red-500' : 'border-gray-300'}
                     ${props.editable === false ? 'bg-gray-100' : 'bg-white'}

@@ -1,4 +1,4 @@
-import ".global.css";
+import "./global.css";
 import React, { useState } from "react";
 import {
   View,
@@ -12,6 +12,7 @@ import {
 }  from "react-native";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
+import Checkbox from "@/components/Checkox";
 
 // Interface for form state
 interface FormData {
@@ -20,6 +21,8 @@ interface FormData {
   phone: string;
   password: string;
   confirmPassword: string;
+  Address: string;
+  termsAccepted: boolean;
 }
 
 //Interface for form errors Messages
@@ -29,6 +32,8 @@ interface FormErrors {
   phone?: string;
   password?: string;
   confirmPassword?: string;
+  Address?: string;
+  termsAccepted?: string;
 }
 
 export default function Index() {
@@ -39,16 +44,18 @@ export default function Index() {
     phone: "",
     password: "",
     confirmPassword: "",
+    Address: "",
+    termsAccepted: false,
   });
 
   // State for form errors Messages
-  const [formErrors, setErrors] = useState<FormErrors>({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateField = (name: string, value: string): string | undefined => {
+  const validateField = (name: string, value: any): string | undefined => {
     switch (name) {
       case "fullname":
         if (!value.trim()) {
@@ -64,7 +71,7 @@ export default function Index() {
             return "กรุณากรอกอีเมล";
           }
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value.trim())) {
+          if (!emailRegex.test(value)) {
             return "รูปแบบอีเมลไม่ถูกต้อง";
           }
           return undefined;
@@ -97,12 +104,27 @@ export default function Index() {
         }
         return undefined;
 
+      case "Address":
+        if (!value || !String(value).trim()) {
+          return "กรุณากรอกที่อยู่";
+        }
+        if (String(value).trim().length > 250) {
+          return "ที่อยู่ต้องมีความยาวไม่เกิน 250 ตัวอักษร";
+        }
+        return undefined;
+
+      case "termsAccepted":
+        if (value !== true) {
+          return "คุณต้องยอมรับข้อตกลงและเงื่อนไข";
+        }
+        return undefined;
+
       default:
         return undefined;
     }
   };
 
-  const handleChange = (name: keyof FormData, value: string) => {
+  const handleChange = (name: keyof FormData, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value
@@ -176,7 +198,7 @@ export default function Index() {
           {
             text: "รีเซ็ตฟอร์ม",
             onPress: handleReset,
-            style: "cancle",
+            style: "cancel",
           },
         ]
       );
@@ -190,6 +212,8 @@ export default function Index() {
       phone: "",
       password: "",
       confirmPassword: "",
+      Address: "",
+      termsAccepted: false,
     });
     setErrors({});
     setTouched({});
@@ -218,7 +242,7 @@ export default function Index() {
           </View>
 
           {/* Form Container*/}
-          <View className="-mt-6 px-6">
+          <View className="mt-6 px-6">
             {/* ชื่อ-นามสกุล */}
             <CustomInput
               label="ชื่อ-นามสกุล"
@@ -226,8 +250,8 @@ export default function Index() {
               value={formData.fullname}
               onChangeText={(value) => handleChange("fullname", value)}
               onBlur={() => handleBlur("fullname")}
-              error={formErrors.fullname}
-              touched= {!!touched.fullname}
+              error={errors.fullname}
+              touched={touched.fullname}
               autoCapitalize="words" //ขึ้นต้นด้วยตัวใหญ่ทุกคำ
             />
           
@@ -238,8 +262,8 @@ export default function Index() {
               value={formData.email}
               onChangeText={(value) => handleChange("email", value)}
               onBlur={() => handleBlur("email")}
-              error={formErrors.email}
-              touched= {!!touched.email}
+              error={errors.email}
+              touched={touched.email}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -251,8 +275,8 @@ export default function Index() {
               value={formData.phone}
               onChangeText={(value) => handleChange("phone", value)}
               onBlur={() => handleBlur("phone")}
-              error={formErrors.phone}
-              touched= {!!touched.phone}
+              error={errors.phone}
+              touched={touched.phone}
               keyboardType="phone-pad"
               maxLength={10}
             />
@@ -264,9 +288,8 @@ export default function Index() {
               value={formData.password}
               onChangeText={(value) => handleChange("password", value)}
               onBlur={() => handleBlur("password")}
-              error={formErrors.password}
-              touched= {!!touched.password}
-              secureTextEntry
+              error={errors.password}
+              touched={touched.password}
               autoCapitalize="none"
             />
 
@@ -278,10 +301,31 @@ export default function Index() {
               value={formData.confirmPassword}
               onChangeText={(value) => handleChange("confirmPassword", value)}
               onBlur={() => handleBlur("confirmPassword")}
-              error={formErrors.confirmPassword}
-              youched= {!!touched.confirmPassword}
-              secureTextEntry
+              error={errors.confirmPassword}
+              touched={touched.confirmPassword}
               autoCapitalize="none"
+            />
+            {/* ที่อยู่ */}
+            <CustomInput
+              label="ที่อยู่"
+              placeholder="กรุณากรอกที่อยู่(ไม่เกิน 250 ตัวอักษร)"
+              value={formData.Address}
+              onChangeText={(value) => handleChange("Address", value)}
+              onBlur={() => handleBlur("Address")}
+              error={errors.Address}
+              touched={touched.Address}
+              autoCapitalize="none"
+              maxLength={250}
+              style={{ height: 100 }}
+              textAlignVertical="top"
+            />
+
+            <Checkbox
+              label="ยอมรับข้อตกลงและเงื่อนไข"
+              checked={formData.termsAccepted}
+              onPress={(value: boolean) => handleChange("termsAccepted", value)}
+              error={errors.termsAccepted}
+              touched={touched.termsAccepted}
             />
 
             {/* Button */}
@@ -289,14 +333,14 @@ export default function Index() {
               <CustomButton
                 title="ลงทะเบียน"
                 onPress={handleSubmit}
-                variant="primary"
-                isLoading={isLoading}
+                variant="Primary"
+                loading={isLoading}
               />
 
               <CustomButton
                 title="รีเซ็ตฟอร์ม"
                 onPress={handleReset}
-                variant="secondary"
+                variant="Secondary"
                 disabled={isLoading}
               />
             </View>
@@ -310,6 +354,7 @@ export default function Index() {
                 -อีเมลต้องมีรูปแบบที่ถูกต้อง{"\n"}
                 -เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก{"\n"}
                 -รหัสผ่านต้องมีอย่างน้อย 6 ตัว{"\n"}
+                -ที่อยู่ต้องมีความยาวไม่เกิน 250 ตัวอักษร{"\n"}
               </Text>
             </View>
           </View>
