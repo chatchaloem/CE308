@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, View, Text } from "react-native";
+import {TouchableOpacity, View, Text} from "react-native";
 
 interface CheckboxProps {
     label: string;
@@ -8,6 +8,7 @@ interface CheckboxProps {
     error?: string;
     touched?: boolean;
 }
+
 
 export default function Checkbox({
     label,
@@ -20,7 +21,7 @@ export default function Checkbox({
 
     return (
         <View style={{ marginVertical: 8 }}>
-            <Pressable
+            <TouchableOpacity
                 onPress={() => onPress(!checked)}
                 style={{ flexDirection: "row", alignItems: "center" }}
             >
@@ -38,7 +39,7 @@ export default function Checkbox({
                     {checked && <Text style={{ color: "#374151" }}>✓</Text>}
                 </View>
                 <Text style={{ color: "#374151" }}>{label}</Text>
-            </Pressable>
+            </TouchableOpacity>
             {hasError && (
                 <Text style={{ color: "#DC2626", marginTop: 4 }}>{error}</Text>
             )}

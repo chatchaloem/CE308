@@ -13,6 +13,7 @@ import {
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import Checkbox from "@/components/Checkox";
+import CustomRadio from "@/components/CustomRadio";
 
 // Interface for form state
 interface FormData {
@@ -23,6 +24,8 @@ interface FormData {
   confirmPassword: string;
   Address: string;
   termsAccepted: boolean;
+  gender?: string;
+  birthDate?: string;
 }
 
 //Interface for form errors Messages
@@ -34,7 +37,10 @@ interface FormErrors {
   confirmPassword?: string;
   Address?: string;
   termsAccepted?: string;
+  gender?: string;
+  birthDate?: string;
 }
+
 
 export default function Index() {
   // State for form data
@@ -318,6 +324,19 @@ export default function Index() {
               maxLength={250}
               style={{ height: 100 }}
               textAlignVertical="top"
+            />
+
+            <CustomRadio
+              label="เพศ"
+              options={[
+                { label: "ชาย", value: "male" },
+                { label: "หญิง", value: "female" },
+                { label: "ไม่ระบุ", value: "other" },
+              ]}
+              value={formData.gender}
+              onChange={(value: string) => handleChange("gender", value)}
+              error={errors.gender}
+              touched={touched.gender}
             />
 
             <Checkbox
