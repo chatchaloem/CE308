@@ -347,14 +347,14 @@ export default function Index() {
             {/* ที่อยู่ */}
             <CustomInput
               label="ที่อยู่"
-              placeholder="กรุณากรอกที่อยู่(ไม่เกิน 250 ตัวอักษร)"
+              placeholder="ต้องกรอกอย่างน้อย 10 ตัวอักษร)"
               value={formData.Address}
               onChangeText={(value) => handleChange("Address", value)}
               onBlur={() => handleBlur("Address")}
               error={errors.Address}
               touched={touched.Address}
               autoCapitalize="none"
-              maxLength={250}
+              maxLength={200}
               style={{ height: 100 }}
               textAlignVertical="top"
             />
