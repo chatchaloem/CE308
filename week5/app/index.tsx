@@ -7,13 +7,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-}  from "react-native";
+} from "react-native";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import Checkbox from "@/components/Checkox";
 import CustomRadio from "@/components/CustomRadio";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 // Interface for form state
 interface FormData {
@@ -25,7 +27,7 @@ interface FormData {
   Address: string;
   termsAccepted: boolean;
   gender?: string;
-  birthDate?: string;
+  birthDate: Date | null;
 }
 
 //Interface for form errors Messages
@@ -42,8 +44,11 @@ interface FormErrors {
 }
 
 
+
 export default function Index() {
   // State for form data
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullname: "",
     email: "",
@@ -51,7 +56,9 @@ export default function Index() {
     password: "",
     confirmPassword: "",
     Address: "",
+    gender: "",
     termsAccepted: false,
+    birthDate: null,
   });
 
   // State for form errors Messages
@@ -60,6 +67,15 @@ export default function Index() {
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
   const [isLoading, setIsLoading] = useState(false);
+
+
+  const formatDate = (date: Date) => {
+    const d = date.getDate().toString().padStart(2, "0");
+    const m = (date.getMonth() + 1).toString().padStart(2, "0");
+    const y = date.getFullYear();
+    return `${d}/${m}/${y}`;
+  };
+
 
   const validateField = (name: string, value: any): string | undefined => {
     switch (name) {
@@ -72,15 +88,15 @@ export default function Index() {
         }
         return undefined;
 
-        case "email":
-          if (!value.trim()) {
-            return "กรุณากรอกอีเมล";
-          }
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value)) {
-            return "รูปแบบอีเมลไม่ถูกต้อง";
-          }
-          return undefined;
+      case "email":
+        if (!value.trim()) {
+          return "กรุณากรอกอีเมล";
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          return "รูปแบบอีเมลไม่ถูกต้อง";
+        }
+        return undefined;
 
       case "phone":
         if (!value.trim()) {
@@ -127,10 +143,24 @@ export default function Index() {
 
       default:
         return undefined;
+
+      case "birthDate":
+        if (!value) return "กรุณาเลือกวันเกิด";
+
+        const today = new Date();
+        let age = today.getFullYear() - value.getFullYear();
+        const m = today.getMonth() - value.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < value.getDate())) {
+          age--;
+        }
+
+        if (age < 13) return "อายุต้องมากกว่า 13 ปี";
+        return;
     }
   };
 
-  const handleChange = (name: keyof FormData, value: string | boolean) => {
+  const handleChange = (name: keyof FormData, value: string | boolean | Date | null) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value
@@ -220,6 +250,9 @@ export default function Index() {
       confirmPassword: "",
       Address: "",
       termsAccepted: false,
+      gender: "",
+      birthDate: null,
+
     });
     setErrors({});
     setTouched({});
@@ -260,7 +293,7 @@ export default function Index() {
               touched={touched.fullname}
               autoCapitalize="words" //ขึ้นต้นด้วยตัวใหญ่ทุกคำ
             />
-          
+
             {/* อีเมล */}
             <CustomInput
               label="อีเมล"
@@ -326,6 +359,22 @@ export default function Index() {
               textAlignVertical="top"
             />
 
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+              <View pointerEvents="none">
+                <CustomInput
+                  label="วันกิด"
+                  placeholder="DD/MM/YYYY"
+                  value={
+                    formData.birthDate
+                      ? formatDate(formData.birthDate)
+                      : ""
+                  }
+                  error={errors.birthDate}
+                  touched={touched.birthDate}
+                />
+              </View>
+            </TouchableOpacity>
+
             <CustomRadio
               label="เพศ"
               options={[
@@ -338,6 +387,7 @@ export default function Index() {
               error={errors.gender}
               touched={touched.gender}
             />
+
 
             <Checkbox
               label="ยอมรับข้อตกลงและเงื่อนไข"
@@ -377,6 +427,22 @@ export default function Index() {
               </Text>
             </View>
           </View>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={formData.birthDate || new Date()}
+              mode="date"
+              maximumDate={new Date()}
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+
+                if (selectedDate) {
+                  handleChange("birthDate", selectedDate);
+                  handleBlur("birthDate");
+                }
+              }}
+            />
+          )}
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
