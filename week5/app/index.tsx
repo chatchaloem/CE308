@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
-import Checkbox from "@/components/Checkox";
+import Checkbox from "@/components/ChecBox";
 import CustomRadio from "@/components/CustomRadio";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
