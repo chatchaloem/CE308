@@ -5,7 +5,7 @@ export default function ProfileScreen() {
         <View style={styles.container}>
             <Text style={styles.title}>Profile Page</Text>
             <Text style={styles.subtitle}>
-                Notice the purple header with custom styling
+                Notice the purple header with custom styling?
             </Text>
         </View>
     );
